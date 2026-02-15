@@ -17,13 +17,17 @@ class User
     public function findByEmail($email)
     {
         $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email=?");
-        return $stmt->execute([$email]);
+        $stmt->execute([$email]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC); // Returns user or false
     }
 
     // User verification ko lagi from mailer ( Verification check must already have been done )
     public function verify($email, $code)
     {
-        $stmt = $this->pdo->prepare("UPDATE users SET verified=1 WHERE email=? AND verification_code=?");
-        return $stmt->execute([$email, $code]);
+        $stmt = $this->pdo->prepare("UPDATE users SET verified=1, verification_code = NULL WHERE email=? AND verification_code=? AND verified=0");
+        $stmt->execute([$email, $code]);
+
+        return $stmt->rowCount() > 0;
     }
 }

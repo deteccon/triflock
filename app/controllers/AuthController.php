@@ -27,22 +27,27 @@ class AuthController
 
             // TODO: Left to add mail sending logic
 
-            return ['success' => 'true', 'message' => 'User registered successfully. Please check your mail for verification'];
+            return ['success' => true, 'message' => 'User registered successfully. Please check your mail for verification'];
         }
 
-        return ['success' => 'false', 'message' => 'Registraion failed'];
+        return ['success' => false, 'message' => 'Registration failed'];
     }
 
     public function login($email, $password)
     {
         $user = $this->userModel->findByEmail($email);
         if (!$user) {
-            return ['success' => 'false', 'message' => 'Invalid credentials'];
+            return ['success' => false, 'message' => 'Invalid credentials'];
         }
 
         if (!password_verify($password, $user['password'])) {
-            return ['success' => 'false', 'message' => 'Invalid credentials'];
+            return ['success' => false, 'message' => 'Invalid credentials'];
         }
+
+        // TODO: Left to add mail sending logic
+        // if (!$user['verified']) {
+        //     return ['success' => false, 'message' => 'Please verify your email first.'];
+        // }
 
         session_start();
         $_SESSION['uId'] = $user['id'];
@@ -61,9 +66,9 @@ class AuthController
     public function verifyEmail($email, $code)
     {
         if ($this->userModel->verify($email, $code)) {
-            return ['success' => 'true', 'message' => 'Verified successfully'];
+            return ['success' => true, 'message' => 'Verified successfully'];
         }
 
-        return ['success' => 'false', 'message' => 'Invalid verification link'];
+        return ['success' => false, 'message' => 'Invalid verification link'];
     }
 }
