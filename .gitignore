@@ -2,3 +2,4 @@
 /.env
 /resources/
 node_modules
+public/assets/css/style.css
