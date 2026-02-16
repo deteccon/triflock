@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../models/User.php';
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../core/Mailer.php';
 
 class AuthController
 {
@@ -19,13 +20,19 @@ class AuthController
         }
 
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-        $verificationCode = bin2hex(random_bytes(16));
+        $token = bin2hex(random_bytes(32));
+        $expiry = date("Y-m-d H:i:s", strtotime("+24 hours"));
 
-        if ($this->userModel->create($name, $email, $passwordHash, $verificationCode)) {
-            // $verify_link = BASE_URL . "/verify.php?code=$verificationCode&email=$email";
-            // $subject = "Verify your Trilock account to activate";
+        if ($this->userModel->create($name, $email, $passwordHash, $token, $expiry)) {
+            $verify_link = BASE_URL . "/verify.php?token=$token";
 
-            // TODO: Left to add mail sending logic
+            $mailsent = Mailer::sendVerificationMail($email, $name, $verify_link);
+
+            if (!$mailsent) {
+                $this->userModel->deleteByEmail($email);
+
+                return ['success' => false, 'message' => 'Registration failed. Could not sent verification mail.'];
+            }
 
             return ['success' => true, 'message' => 'User registered successfully. Please check your mail for verification'];
         }
@@ -44,10 +51,9 @@ class AuthController
             return ['success' => false, 'message' => 'Invalid credentials'];
         }
 
-        // TODO: Left to add mail sending logic
-        // if (!$user['verified']) {
-        //     return ['success' => false, 'message' => 'Please verify your email first.'];
-        // }
+        if (!$user['verified']) {
+            return ['success' => false, 'message' => 'Please verify your email first.'];
+        }
 
         session_start();
         $_SESSION['uId'] = $user['id'];
@@ -63,10 +69,16 @@ class AuthController
         session_destroy();
     }
 
-    public function verifyEmail($email, $code)
+    public function verifyEmail($token)
     {
-        if ($this->userModel->verify($email, $code)) {
-            return ['success' => true, 'message' => 'Verified successfully'];
+        $result = $this->userModel->verify($token);
+
+        if ($result === 'success') {
+            return ['success' => true, 'message' => 'Email verified successfully'];
+        }
+
+        if ($result === 'already_verified') {
+            return ['success' => false, 'message' => 'Email already verified'];
         }
 
         return ['success' => false, 'message' => 'Invalid verification link'];

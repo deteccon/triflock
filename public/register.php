@@ -67,7 +67,7 @@ include __DIR__ . '/../views/layout/header.php';
                 <label class="block mb-2 font-semibold text-slate-700 dark:text-slate-300 uppercase text-xs tracking-wider">
                     Full Name
                 </label>
-                <input type="text" name="name" placeholder="Abiral Parajuli" required
+                <input type="text" name="name" placeholder="Your Name" required
                     class="w-full border-2 border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-50 px-4 py-3 focus:outline-none focus:border-amber-500 dark:focus:border-amber-500 transition-all duration-200">
             </div>
 
