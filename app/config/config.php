@@ -16,5 +16,10 @@ define("MAIL_PORT", $_ENV['MAIL_PORT']);
 
 define("SENDER_MAIL", $_ENV['SENDER_MAIL']);
 
+define('IMAGEKIT_PUBLIC_KEY', $_ENV['IMAGEKIT_PUBLIC_KEY']);
+define('IMAGEKIT_PRIVATE_KEY', $_ENV['IMAGEKIT_PRIVATE_KEY']);
+define('IMAGEKIT_URL_ENDPOINT', $_ENV['IMAGEKIT_URL_ENDPOINT']);
+
+
 define("BASE_URL", "http://localhost:8000/public");
 define("APP_NAME", "Triflock");

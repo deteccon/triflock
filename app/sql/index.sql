@@ -5,5 +5,14 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL,
     verified TINYINT(1) NOT NULL DEFAULT 0,
     verification_code VARCHAR(100),
+    verification_expiry DATETIME,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE profile_pics (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL UNIQUE,
+    profile_pic VARCHAR(255) NOT NULL,
+    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

@@ -58,6 +58,7 @@ class AuthController
         session_start();
         $_SESSION['uId'] = $user['id'];
         $_SESSION['uName'] = $user['name'];
+        $_SESSION['uProfP'] = $user['profile_pic'];
 
         return ['success' => true, 'message' => 'Login successful'];
     }

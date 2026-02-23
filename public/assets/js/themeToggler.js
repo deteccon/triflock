@@ -3,10 +3,13 @@ const toggleBtn = document.getElementById("theme-tog");
 const iconS = document.getElementById("icon-S");
 const iconM = document.getElementById("icon-M");
 
+const prefersDark =
+  window.matchMedia &&
+  window.matchMedia("(prefers-color-scheme: dark)").matches;
+
 if (
   localStorage.getItem("theme") === "dark" ||
-  (!localStorage.getItem("theme") &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches())
+  (!localStorage.getItem("theme") && prefersDark)
 ) {
   htmlElement.classList.add("dark");
   iconS.classList.remove("hidden");
@@ -29,4 +32,3 @@ toggleBtn.addEventListener("click", () => {
     iconM.classList.remove("hidden");
   }
 });
-

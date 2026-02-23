@@ -16,7 +16,12 @@ class User
 
     public function findByEmail($email)
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email=?");
+        $stmt = $this->pdo->prepare("
+        SELECT u.*, p.profile_pic
+        FROM users u
+        LEFT JOIN profile_pics p ON u.id = p.user_id
+        WHERE u.email = ?
+    ");
         $stmt->execute([$email]);
 
         return $stmt->fetch(PDO::FETCH_ASSOC); // Returns user or false
@@ -55,5 +60,14 @@ class User
         $update->execute([$user['id']]);
 
         return 'success';
+    }
+
+    public function updateProfilePic($userId, $url)
+    {
+        $stmt = $this->pdo->prepare(
+            "INSERT INTO profile_pics (user_id, profile_pic) VALUES (?, ?)"
+        );
+
+        return $stmt->execute([$userId, $url]);
     }
 }
